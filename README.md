@@ -1,44 +1,154 @@
-# Toxic-Comment-Classification-with-DistilBERT
-Multilingual toxic comment classifier using DistilBERT. Trained on Jigsaw dataset for binary classification (toxic vs non-toxic), with support for evaluation on multilingual and English-only data. Includes training, validation, prediction, and confusion matrix visualisation.
+---
 
-This project uses the distilbert-base-multilingual-cased model to detect toxic comments in multiple languages. It fine-tunes a transformer-based classifier on the Jigsaw dataset for binary classification (toxic vs. non-toxic), with special handling for class imbalance and multilingual evaluation.
+# 🚫 Toxic Comment Classification with DistilBERT
 
-🔧 Key Features
-- Multilingual Support: Trained on multilingual text and tested on both multilingual and English-only datasets.
+Welcome! 👋 This project is a hands-on deep learning pipeline built in Google Colab for classifying toxic comments using the powerful **DistilBERT** language model. We fine-tune a multilingual transformer on a real-world dataset from the [Jigsaw Toxic Comment Challenge](https://www.kaggle.com/code/tanulsingh077/deep-learning-for-nlp-zero-to-transformers-bert/notebook) to help automatically detect online toxicity in comments.
 
-- Model Architecture: Based on DistilBERT with a linear classification head.
+---
 
-- Class Imbalance Handling: Uses BCEWithLogitsLoss with pos_weight to penalize toxic comments appropriately.
+## 📚 What This Project Covers
 
-- Performance Metrics: Tracks Accuracy, AUC, and displays confusion matrices for evaluation.
+This notebook walks you through every stage of a modern NLP pipeline:
 
-- Inference Support: Includes a function to predict toxicity of personal input texts.
+1. **Environment Setup** – Mount Google Drive, clone the repo, set paths, and check GPU availability.
+2. **Data Handling** – Load and process a subset of the Jigsaw dataset for training, validation, and testing.
+3. **Preprocessing** – Tokenize and encode comments using HuggingFace's `distilbert-base-multilingual-cased` tokenizer.
+4. **Model Building** – Use a distilled BERT transformer with a binary classification head.
+5. **Training Loop** – Train with class imbalance handling using weighted BCE loss and evaluate with accuracy & AUC.
+6. **Evaluation** – Test on multilingual and English-only subsets, and visualize performance with confusion matrices.
+7. **Real-Time Predictions** – (Optional) Try it out on your own input and see how the model responds.
 
-- Efficient Processing: Tokenization with batching and chunking for scalability.
+---
 
-📁 Structure
-- data/: Contains input datasets.
+## 🛠️ Tech Stack
 
-- model/: DistilBERT classifier definition.
+* 🐍 Python
+* 🤗 HuggingFace Transformers (`distilbert-base-multilingual-cased`)
+* 🧠 PyTorch
+* 📊 Scikit-learn
+* 📈 Matplotlib, Seaborn, Plotly
+* 🚀 Google Colab
 
-- train.py: Training loop with metrics.
+---
 
-- evaluate.py: Validation and multilingual/English evaluation.
+## 📁 Project Structure
 
-- inference.py: Predict single comment toxicity.
+```bash
+Toxic-Comment-Classification-with-DistilBERT/
+│
+├── jigsaw-toxic-comment-train.csv         # Training dataset
+├── validation.csv                         # Validation dataset
+├── test.csv                               # Multilingual test data
+├── test_labels.csv                        # Ground-truth test labels
+├── tokenizer/                             # Tokenizer config files
+├── toxic_model_v1.pt                      # Saved model weights
+├── NLP Toxic Comment New.ipynb            # Main Colab notebook
+├── README.md                              # You're here!
+```
 
-- toxic_model_v1.pt: Saved model weights.
+---
 
-- tokenizer/: Pretrained tokenizer files.
+## 🚀 Getting Started
 
-📊 Dataset - Jigsaw Multilingual Toxic Comment Classification
+### Step 1: Clone the repository in Google Colab
 
-✅ Results
-Achieves strong accuracy and AUC on both multilingual and English test sets. Confusion matrices show balanced detection across toxic and non-toxic labels.
+```python
+!git clone https://github.com/monal28/Toxic-Comment-Classification-with-DistilBERT.git
+%cd Toxic-Comment-Classification-with-DistilBERT
+```
 
-💡 Future Improvements
-- Fine-tune on larger transformer models (e.g., XLM-R)
+### Step 2: Set up GPU and import dependencies
 
-- Try ensemble methods for better generalization
+```python
+import torch
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
+```
 
-- Deploy as an API for real-time toxicity detection
+### Step 3: Load and preprocess the data
+
+```python
+import pandas as pd
+train = pd.read_csv('jigsaw-toxic-comment-train.csv', nrows=10000)
+valid = pd.read_csv('validation.csv')
+test = pd.read_csv('test.csv', nrows=5000)
+```
+
+### Step 4: Tokenization using DistilBERT
+
+```python
+from transformers import AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained('distilbert-base-multilingual-cased')
+```
+
+---
+
+## 🏗️ Model Architecture
+
+We fine-tune a **DistilBERT** transformer using a simple classification head (Linear Layer) that predicts whether a comment is toxic or not.
+
+```python
+class ToxicClassifier(nn.Module):
+    def __init__(self, model_name="distilbert-base-multilingual-cased"):
+        super().__init__()
+        self.bert = AutoModel.from_pretrained(model_name)
+        self.classifier = nn.Linear(self.bert.config.hidden_size, 1)
+
+    def forward(self, input_ids, attention_mask):
+        outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
+        cls_token = outputs.last_hidden_state[:, 0, :]
+        logits = self.classifier(cls_token)
+        return logits
+```
+
+---
+
+## 📈 Training & Metrics
+
+* Optimizer: **Adam**
+* Loss: **Weighted BCEWithLogitsLoss** (to handle class imbalance)
+* Evaluation Metrics:
+
+  * **Accuracy**
+  * **ROC-AUC**
+  * **Confusion Matrix**
+
+---
+
+## 🔍 Performance Snapshot
+
+| Metric   | Multilingual | English-only |
+| -------- | ------------ | ------------ |
+| Accuracy | 77.52%       | 84.44%       |
+| ROC-AUC  | 76.82%       | 94.81%       |
+
+🔵 Confusion matrices and plots are available in the notebook.
+
+---
+
+## 🤔 Why DistilBERT?
+
+DistilBERT is a lighter, faster alternative to BERT with **97% of its performance**, making it ideal for training in limited-resource environments like Colab.
+
+🌐 Bonus: Using the *multilingual* version of DistilBERT lets us work with comments written in **multiple languages**, not just English.
+
+---
+
+## 💡 Future Improvements
+
+* Add attention heatmaps to interpret model focus
+* Incorporate ensemble with other transformer models
+* Extend to multi-label classification for subtypes of toxicity
+
+---
+
+## **Web Deployement! 💻⚡**
+The model is deployed on a web interface. You can test it live by scanning the QR code below or [clicking here](https://shaggy-lot-042991.framer.app).
+
+![494360452_1354147595868795_387994747356468779_n](https://github.com/user-attachments/assets/ebefefdc-a92f-48b8-a212-c0f4218c9b16)
+
+---
+**Happy coding! 💻⚡**
+*Let’s make the internet a little less toxic, one comment at a time.*
+
+---
