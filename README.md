@@ -20,7 +20,6 @@ This notebook walks you through every stage of a modern NLP pipeline:
 4. **Model Building** – Use a distilled BERT transformer with a binary classification head.
 5. **Training Loop** – Train with class imbalance handling using weighted BCE loss and evaluate with accuracy & AUC.
 6. **Evaluation** – Test on multilingual and English-only subsets, and visualize performance with confusion matrices.
-7. **Real-Time Predictions** – (Optional) Try it out on your own input and see how the model responds.
 
 ---
 
@@ -146,13 +145,8 @@ DistilBERT is a lighter, faster alternative to BERT with **97% of its performanc
 
 ---
 
-## **Web Deployement! 💻⚡**
-The model is deployed on a web interface. You can test it live by scanning the QR code below or [clicking here](https://shaggy-lot-042991.framer.app).
-
-![494360452_1354147595868795_387994747356468779_n](https://github.com/user-attachments/assets/ebefefdc-a92f-48b8-a212-c0f4218c9b16)
-
----
 **Happy coding! 💻⚡**
 *Let’s make the internet a little less toxic, one comment at a time.*
 
+---
 ---
