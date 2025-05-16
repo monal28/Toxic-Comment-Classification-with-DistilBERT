@@ -6,6 +6,10 @@ Welcome! 👋 This project is a hands-on deep learning pipeline built in Google 
 
 ---
 
+Google Colab Link - https://drive.google.com/file/d/1CqCUVrRnqad9yw31ipC-frzfAuC-6kxF/view?usp=sharing
+
+---
+
 ## 📚 What This Project Covers
 
 This notebook walks you through every stage of a modern NLP pipeline:
