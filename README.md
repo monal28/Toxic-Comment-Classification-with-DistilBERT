@@ -123,8 +123,8 @@ class ToxicClassifier(nn.Module):
 
 | Metric   | Multilingual | English-only |
 | -------- | ------------ | ------------ |
-| Accuracy | 77.52%       | 84.44%       |
-| ROC-AUC  | 76.82%       | 94.81%       |
+| Accuracy | 81.88%       | 85.70%       |
+| ROC-AUC  | 87.56%       | 94.27%       |
 
 🔵 Confusion matrices and plots are available in the notebook.
 
